@@ -1,0 +1,15 @@
+{
+  "name": "sleek-pdf",
+  "version": "0.1.0",
+  "main": "pdfViewer.js",
+  "scripts": {
+    "build": "node ./build.js",
+    "watch": "node ./build.js --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

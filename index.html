@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Sleek PDF</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./vendor/pdf.min.js"></script>
+  </head>
+  <body>
+    <!-- PDF viewer block -->
+    <div class="pdf_viewer"></div>
+
+    <!-- Navigation controls (BEAM element of pdf_viewer) -->
+    <div class="pdf_controls" data-state="idle" data-visible="false">
+      <div class="pdf_controls-pill">
+        <button class="pdf_controls-nav" data-direction="prev">
+          <img src="assets/back.svg" alt="Previous page" />
+        </button>
+        <span class="pdf_controls-info">
+          <span class="pdf_controls-current">1</span>
+          <span>/</span>
+          <span class="pdf_controls-total">0</span>
+        </span>
+        <button class="pdf_controls-nav" data-direction="next">
+          <img src="assets/forward.svg" alt="Next page" />
+        </button>
+      </div>
+    </div>
+
+    <script src="dist/pdfViewer.js"></script>
+  </body>
+</html>

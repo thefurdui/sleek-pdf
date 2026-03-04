@@ -1,0 +1,320 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-surface, #333);
+}
+
+button {
+  background: transparent;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-thumb {
+  display: none; /* Webkit browsers */
+}
+
+.pdf_viewer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg-surface, #333);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.pdf_viewer-page {
+  position: relative;
+  flex-shrink: 0;
+  margin: 0 10px;
+  min-width: var(--page-width, 100vw);
+  min-height: var(--page-height, 100vh);
+  scroll-snap-align: center;
+  background-image: var(--page-background-image, none);
+  background-position: center;
+  transition: background-image 0.3s ease-out;
+}
+
+.pdf_viewer-page canvas,
+.pdf_viewer-page .pdf_viewer-annotation,
+.pdf_viewer-page .pdf_viewer-text {
+  display: block;
+  margin: auto;
+}
+
+.pdf_viewer-page canvas {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+  width: var(--page-width, 100vw);
+  height: var(--page-height, 100vh);
+}
+
+.pdf_viewer-page canvas[data-loaded='true'] {
+  opacity: 1;
+}
+
+.pdf_viewer-page .pdf_viewer-annotation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  z-index: 10;
+  width: var(--page-width, 100vw);
+  height: var(--page-height, 100vh);
+}
+
+.pdf_viewer-link {
+  position: absolute;
+  left: var(--link-left, 0);
+  top: var(--link-top, 0);
+  width: var(--link-width, 0);
+  height: var(--link-height, 0);
+}
+
+.pdf_viewer-page .pdf_viewer-annotation a {
+  pointer-events: auto;
+}
+
+.pdf_viewer-page .pdf_viewer-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  line-height: 1;
+  user-select: text;
+  z-index: 2;
+}
+
+.pdf_viewer-page .pdf_viewer-text > span {
+  position: absolute;
+  white-space: pre;
+  transform-origin: 0 0;
+  color: transparent;
+}
+
+.loading_indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.loading_indicator[data-state='hidden'] {
+  display: none;
+}
+
+.loading_indicator img {
+  width: 68px;
+  height: 68px;
+  animation: spin 2s linear infinite;
+}
+
+.pdf_viewer-download svg {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pdf_controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-on-surface, #fff);
+  font-family: sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+  z-index: 100;
+  gap: 8px;
+}
+
+.pdf_controls[data-state='loaded'][data-visible='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pdf_controls[data-visible='false'] {
+  pointer-events: none;
+}
+
+.pdf_controls[data-visible='true'] {
+  pointer-events: auto;
+}
+
+.pdf_viewer-placeholder {
+  width: 32px;
+  height: 32px;
+}
+
+.pdf_controls-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  background: var(--bg-surface-elevated, #2c2c2c);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  padding: 4px 2px;
+  border-radius: 25px;
+  transition: background-color 0.3s;
+  min-height: 28px;
+  min-width: 28px;
+  box-sizing: border-box;
+}
+
+.pdf_controls-pill:hover {
+  background: var(--bg-surface, #333);
+}
+
+.pdf_controls .pdf_controls-nav {
+  border: none;
+  color: var(--text-on-surface, #fff);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pdf_controls .pdf_controls-nav img {
+  width: 16px;
+  height: 16px;
+  filter: invert(1); /* Make SVG white */
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.pdf_controls .pdf_controls-nav:hover img {
+  opacity: 1;
+}
+
+.pdf_controls-info {
+  display: flex;
+  justify-content: center;
+  min-width: 40px;
+  text-align: center;
+  gap: 4px;
+}
+
+.pdf_controls-info span {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+/* Spinner styles */
+.loading_indicator-spinner {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  padding: 10px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.loading_indicator-spinner[data-position='absolute'] {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.loading_indicator-spinner div {
+  width: 6%;
+  height: 16%;
+  background: rgb(255 255 255 / 70%);
+  position: absolute;
+  left: 49%;
+  top: 43%;
+  opacity: 0;
+  border-radius: 50px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  animation: fade 1s linear infinite;
+}
+
+@keyframes fade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.25;
+  }
+}
+
+.loading_indicator-spinner .loading_indicator-bar1 {
+  transform: rotate(0deg) translate(0, -130%);
+  animation-delay: 0s;
+}
+.loading_indicator-spinner .loading_indicator-bar2 {
+  transform: rotate(30deg) translate(0, -130%);
+  animation-delay: -0.9167s;
+}
+.loading_indicator-spinner .loading_indicator-bar3 {
+  transform: rotate(60deg) translate(0, -130%);
+  animation-delay: -0.833s;
+}
+.loading_indicator-spinner .loading_indicator-bar4 {
+  transform: rotate(90deg) translate(0, -130%);
+  animation-delay: -0.7497s;
+}
+.loading_indicator-spinner .loading_indicator-bar5 {
+  transform: rotate(120deg) translate(0, -130%);
+  animation-delay: -0.667s;
+}
+.loading_indicator-spinner .loading_indicator-bar6 {
+  transform: rotate(150deg) translate(0, -130%);
+  animation-delay: -0.5837s;
+}
+.loading_indicator-spinner .loading_indicator-bar7 {
+  transform: rotate(180deg) translate(0, -130%);
+  animation-delay: -0.5s;
+}
+.loading_indicator-spinner .loading_indicator-bar8 {
+  transform: rotate(210deg) translate(0, -130%);
+  animation-delay: -0.4167s;
+}
+.loading_indicator-spinner .loading_indicator-bar9 {
+  transform: rotate(240deg) translate(0, -130%);
+  animation-delay: -0.333s;
+}
+.loading_indicator-spinner .loading_indicator-bar10 {
+  transform: rotate(270deg) translate(0, -130%);
+  animation-delay: -0.2497s;
+}
+.loading_indicator-spinner .loading_indicator-bar11 {
+  transform: rotate(300deg) translate(0, -130%);
+  animation-delay: -0.167s;
+}
+.loading_indicator-spinner .loading_indicator-bar12 {
+  transform: rotate(330deg) translate(0, -130%);
+  animation-delay: -0.0833s;
+}
